@@ -2,8 +2,10 @@ package com.example.democ12jwt.controller;
 
 import com.example.democ12jwt.model.AppUser;
 import com.example.democ12jwt.model.DTO.JwtResponse;
+
 import com.example.democ12jwt.service.appuser.IAppUserService;
 import com.example.democ12jwt.service.jwt.JwtService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 //@RequestMapping("/api")
+@CrossOrigin("*")
 public class AuthController {
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -43,12 +46,22 @@ public class AuthController {
     public ResponseEntity<String> hello() {
         return new ResponseEntity<>("Hello World", HttpStatus.OK);
     }
+
     @GetMapping("/admin")
     public ResponseEntity<String> admin() {
         return new ResponseEntity<>("Admin", HttpStatus.OK);
     }
-    @GetMapping("/user")
-    public ResponseEntity<String> user() {
+
+    @GetMapping("/supplier")
+    public ResponseEntity<String> supplier() {
         return new ResponseEntity<>("User", HttpStatus.OK);
     }
+
+    @GetMapping("/customer")
+    public ResponseEntity<String> customer() {
+        return new ResponseEntity<>("User", HttpStatus.OK);
+    }
+
+
+
 }
