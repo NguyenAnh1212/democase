@@ -52,15 +52,12 @@ public class AuthController {
         return new ResponseEntity<>("Admin", HttpStatus.OK);
     }
 
-    @GetMapping("/supplier")
+    @GetMapping("/user")
     public ResponseEntity<String> supplier() {
         return new ResponseEntity<>("User", HttpStatus.OK);
     }
 
-    @GetMapping("/customer")
-    public ResponseEntity<String> customer() {
-        return new ResponseEntity<>("User", HttpStatus.OK);
-    }
+
 
 
 

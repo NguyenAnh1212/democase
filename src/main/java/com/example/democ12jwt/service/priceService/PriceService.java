@@ -41,4 +41,6 @@ public class PriceService implements IPriceService {
     public void remove(Long id) {
         priceRepository.deleteById(id);
     }
+
+
 }

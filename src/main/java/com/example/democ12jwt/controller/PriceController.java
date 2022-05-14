@@ -4,8 +4,12 @@ import com.example.democ12jwt.model.AppService;
 import com.example.democ12jwt.model.Price;
 
 import com.example.democ12jwt.model.Supplier;
+import com.example.democ12jwt.model.priceAndId.PriceAndId;
+import com.example.democ12jwt.model.svAndP.ServiceAndPrice;
 import com.example.democ12jwt.service.appServiceS.IAppServiceS;
+import com.example.democ12jwt.service.priceAndIdSV.IPriceAndIdSV;
 import com.example.democ12jwt.service.priceService.IPriceService;
+import com.example.democ12jwt.service.serviceAndPrice.IServiceAndPriceSV;
 import com.example.democ12jwt.service.supplierService.ISupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,11 +30,28 @@ public class PriceController {
     @Autowired
     private IAppServiceS appServiceS;
 
+    @Autowired
+    private IPriceAndIdSV priceAndIdSV;
+
     @GetMapping
     public ResponseEntity<Iterable<Price>> findAll(){
         Iterable<Price> prices = priceService.findAll();
         return new ResponseEntity<>(prices, HttpStatus.OK);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Price> findPriceById(@PathVariable Long id){
+        Price prices = priceService.findById(id).get();
+        return new ResponseEntity<>(prices, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Price> deletePrice(@PathVariable Long id){
+        Price price = priceService.findById(id).get();
+        if (price!=null) priceService.remove(id);
+        return new ResponseEntity<>(price, HttpStatus.OK);
+    }
+
 
     @GetMapping("/sup/{id1}/ser/{id2}")
     public ResponseEntity<Price> findBySupAndSer(@PathVariable("id1") Long sup_id,
@@ -40,6 +61,7 @@ public class PriceController {
         Optional<Price> price = priceService.getPriceBySerAndSup(appService.get(), supplier.get());
         return new ResponseEntity<>(price.get(), HttpStatus.OK);
     }
+
 
     @GetMapping("/sup/{id1}/ser/{id2}/{price}")
     public ResponseEntity<Price> findById(@PathVariable("id1") Long sup_id,
@@ -58,22 +80,14 @@ public class PriceController {
         return new ResponseEntity<>(priceService.save(price), HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Price> updatePrice(@PathVariable Long id, @RequestBody Price price){
-        Optional<Price> priceOptional = priceService.findById(id);
-        price.setId(priceOptional.get().getId());
-        if (!priceOptional.isPresent()){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        priceService.save(price);
-        return new ResponseEntity<>(priceOptional.get(), HttpStatus.OK);
-    }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Price> deletePrice(@PathVariable Long id){
-        Price price = priceService.findById(id).get();
-        if (price!=null) priceService.remove(id);
-        return new ResponseEntity<>(price, HttpStatus.OK);}
+
+
+
+
+
+
+
 
 
 }

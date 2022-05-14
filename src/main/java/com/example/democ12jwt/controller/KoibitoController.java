@@ -2,10 +2,12 @@ package com.example.democ12jwt.controller;
 
 import com.example.democ12jwt.model.*;
 import com.example.democ12jwt.model.DTO.SupplierForm;
+import com.example.democ12jwt.model.svAndP.ServiceAndPrice;
 import com.example.democ12jwt.service.addressService.IAddressService;
 import com.example.democ12jwt.service.appServiceS.IAppServiceS;
 import com.example.democ12jwt.service.genderService.IGenderService;
 import com.example.democ12jwt.service.priceService.IPriceService;
+import com.example.democ12jwt.service.serviceAndPrice.IServiceAndPriceSV;
 import com.example.democ12jwt.service.statusService.IStatusService;
 import com.example.democ12jwt.service.supplierService.ISupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 
-@Controller
+@RestController
 @RequestMapping("/koibito")
 @CrossOrigin("*")
 public class KoibitoController {
@@ -40,6 +42,9 @@ public class KoibitoController {
 
     @Autowired
     private IAppServiceS appServiceS;
+
+    @Autowired
+    private IServiceAndPriceSV serviceAndPriceSV;
 
     @Autowired
     private IPriceService priceService;
@@ -68,6 +73,13 @@ public class KoibitoController {
 
     @Autowired
     Environment env;
+
+    @GetMapping("/findPriceBySupplierId/{id}")
+    public ResponseEntity<Iterable<ServiceAndPrice>> showPriceAndName(@PathVariable Long id){
+        Iterable<ServiceAndPrice> listPriceAndName = serviceAndPriceSV.getNameAndPrice(id);
+        return new ResponseEntity<>(listPriceAndName, HttpStatus.OK);
+    }
+
 
     @GetMapping("/address")
     public ResponseEntity<Iterable<Address>> showAllAddress(){

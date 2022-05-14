@@ -9,4 +9,7 @@ import java.util.Optional;
 
 public interface IPriceService extends IGeneralService<Price> {
     Optional<Price> getPriceBySerAndSup(AppService appService, Supplier supplier);
+
+
+
 }
