@@ -5,11 +5,14 @@ import com.example.democ12jwt.model.Price;
 
 import com.example.democ12jwt.model.Supplier;
 import com.example.democ12jwt.model.priceAndId.PriceAndId;
+import com.example.democ12jwt.model.supplier_age.SupplierAge;
 import com.example.democ12jwt.model.svAndP.ServiceAndPrice;
+import com.example.democ12jwt.repo.ISupplierRepository;
 import com.example.democ12jwt.service.appServiceS.IAppServiceS;
 import com.example.democ12jwt.service.priceAndIdSV.IPriceAndIdSV;
 import com.example.democ12jwt.service.priceService.IPriceService;
 import com.example.democ12jwt.service.serviceAndPrice.IServiceAndPriceSV;
+import com.example.democ12jwt.service.supplierAge.ISupplierAgeSV;
 import com.example.democ12jwt.service.supplierService.ISupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,6 +36,7 @@ public class PriceController {
     @Autowired
     private IPriceAndIdSV priceAndIdSV;
 
+
     @GetMapping
     public ResponseEntity<Iterable<Price>> findAll(){
         Iterable<Price> prices = priceService.findAll();
@@ -52,6 +56,70 @@ public class PriceController {
         return new ResponseEntity<>(price, HttpStatus.OK);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Price> updatePrice(@PathVariable Long id, @RequestBody Price price){
+        Optional<Price> priceOptional = priceService.findById(id);
+        Long supplier_id = priceOptional.get().getSupplier().getId();
+        Long service_id = priceOptional.get().getAppService().getId();
+        Optional<Supplier> supplierOptional = supplierService.findById(supplier_id);
+        Supplier updateSupplier = supplierOptional.get();
+        Optional<AppService> serviceOptional = appServiceS.findById(service_id);
+        AppService updateService = serviceOptional.get();
+        Price updatePrice = new Price(id, price.getPrice(), updateSupplier, updateService);
+        priceService.save(updatePrice);
+        return new ResponseEntity<>(priceOptional.get(), HttpStatus.OK);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//    @PostMapping
+//    public ResponseEntity<Price> savePrice(@PathVariable Long sup_id,
+//                                           @RequestBody Price price,
+//                                           @RequestBody AppService appService){
+//        Optional<Supplier> supplierOptional = supplierService.findById(sup_id);
+//        Supplier supplier = supplierOptional.get();
+//        supplierService.save(supplier);
+//        appServiceS.save(appService);
+//        priceService.save(price);
+//        return new ResponseEntity<>(priceService.save(price), HttpStatus.CREATED);
+//    }
+
+    @PostMapping
+    public ResponseEntity<Price> savePrice(@RequestBody Price price){
+        return new ResponseEntity<>(priceService.save(price), HttpStatus.CREATED);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    @PostMapping("/updatePrice/{id}/{price}")
+    public ResponseEntity<PriceAndId> updatePrice1(@PathVariable Long id, double price){
+        Optional<PriceAndId> updatePrice = priceAndIdSV.updatePriceById(id, price);
+        return new ResponseEntity<>(updatePrice.get(), HttpStatus.OK);
+    }
 
     @GetMapping("/sup/{id1}/ser/{id2}")
     public ResponseEntity<Price> findBySupAndSer(@PathVariable("id1") Long sup_id,
@@ -75,10 +143,6 @@ public class PriceController {
         return new ResponseEntity<>(price.get(), HttpStatus.OK);
     }
 
-    @PostMapping
-    public ResponseEntity<Price> savePrice(@RequestBody Price price){
-        return new ResponseEntity<>(priceService.save(price), HttpStatus.CREATED);
-    }
 
 
 

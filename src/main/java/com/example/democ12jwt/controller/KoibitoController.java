@@ -2,6 +2,7 @@ package com.example.democ12jwt.controller;
 
 import com.example.democ12jwt.model.*;
 import com.example.democ12jwt.model.DTO.SupplierForm;
+import com.example.democ12jwt.model.supplier_age.SupplierAge;
 import com.example.democ12jwt.model.svAndP.ServiceAndPrice;
 import com.example.democ12jwt.service.addressService.IAddressService;
 import com.example.democ12jwt.service.appServiceS.IAppServiceS;
@@ -9,6 +10,7 @@ import com.example.democ12jwt.service.genderService.IGenderService;
 import com.example.democ12jwt.service.priceService.IPriceService;
 import com.example.democ12jwt.service.serviceAndPrice.IServiceAndPriceSV;
 import com.example.democ12jwt.service.statusService.IStatusService;
+import com.example.democ12jwt.service.supplierAge.ISupplierAgeSV;
 import com.example.democ12jwt.service.supplierService.ISupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -48,6 +50,10 @@ public class KoibitoController {
 
     @Autowired
     private IPriceService priceService;
+
+    @Autowired
+    private ISupplierAgeSV supplierAgeSV;
+
 
     @GetMapping("/price")
     public ResponseEntity<Iterable<Price>> showAll(){
@@ -162,5 +168,34 @@ public class KoibitoController {
         }
         return new ResponseEntity<>(supplierService.save(existSupplier), HttpStatus.OK);
     }
+
+    @GetMapping("/supByAge/{age}")
+    public ResponseEntity<Iterable<SupplierAge>> findSupplierByAge(@PathVariable Long age){
+        Iterable<SupplierAge> listSupplierAge = supplierAgeSV.getByAge(age);
+        return new ResponseEntity<>(listSupplierAge, HttpStatus.OK);
+    }
+
+//    @GetMapping("/supByAge/{age1}/{age2}")
+//    public ResponseEntity<Iterable<SupplierAge>> findSupplierByAgeBetween(@PathVariable Long age1, @PathVariable Long age2){
+//        Iterable<SupplierAge> listSupplierAge = supplierAgeSV.getSupplierByAgeBetween(age1, age2);
+//        return new ResponseEntity<>(listSupplierAge, HttpStatus.OK);
+//    }
+
+//    @GetMapping("/supByAgeBetween")
+//    public ResponseEntity<Iterable<SupplierAge>> findSupplierByAgeBetween(@RequestParam Long age1,
+//                                                                          @RequestParam Long age2){
+//        Iterable<SupplierAge> listSupplierAge = supplierAgeSV.getSupplierByAgeBetween(age1, age2);
+//        return new ResponseEntity<>(listSupplierAge, HttpStatus.OK);
+//    }
+
+    @GetMapping("/supByMultiCondition")
+    public ResponseEntity<Iterable<SupplierAge>> findSupplierByMultiCondition(@RequestParam Long age1,
+                                                                              @RequestParam Long age2,
+                                                                              @RequestParam Long idG,
+                                                                              @RequestParam Long idAd){
+        Iterable<SupplierAge> listSupplierAge = supplierAgeSV.getSupplierByMultilCondition(age1, age2, idG, idAd);
+        return new ResponseEntity<>(listSupplierAge, HttpStatus.OK);
+    }
+
 
 }
